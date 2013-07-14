@@ -3,5 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="libs/poi-3.9-20121203.jar"/>
+	<classpathentry kind="lib" path="libs/poi-ooxml-3.9-20121203.jar"/>
+	<classpathentry kind="lib" path="libs/xmlbeans-2.3.0.jar"/>
+	<classpathentry kind="lib" path="libs/poi-ooxml-schemas-3.9-20121203.jar"/>
+	<classpathentry kind="lib" path="libs/dom4j-1.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

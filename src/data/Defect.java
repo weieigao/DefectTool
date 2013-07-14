@@ -14,6 +14,11 @@ public class Defect {
             this.component = Component.VM;
         }
     }
+    
+    public Defect(String id, Component comp){
+        this.id = id;
+        this.component = comp;
+    }
 
     public String getId() {
         return id;
