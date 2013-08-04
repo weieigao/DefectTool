@@ -25,43 +25,37 @@ public class TestUtils {
 
     @Test
     public void testVmDefectList() throws IOException{
-        Utils u = new Utils();
-        ArrayList<Defect> defectList = u.vmDefectList(RAW_DATA_File_NAME);
+        ArrayList<Defect> defectList = Utils.vmDefectList(RAW_DATA_File_NAME);
         assertEquals(vmDefectCount,defectList.size());
     }
     
     @Test
     public void testJCLDefectList() throws IOException {
-        Utils u = new Utils();
-        ArrayList<Defect> defectList = u.jclDefectList(RAW_DATA_File_NAME);
+        ArrayList<Defect> defectList = Utils.jclDefectList(RAW_DATA_File_NAME);
         assertEquals(jclDefectCount,defectList.size());
     }
 
     @Test
     public void testJITDefectList() throws IOException {
-        Utils u = new Utils();
-        ArrayList<Defect> defectList = u.jitDefectList(RAW_DATA_File_NAME);
+        ArrayList<Defect> defectList = Utils.jitDefectList(RAW_DATA_File_NAME);
         assertEquals(jitDefectCount,defectList.size());
     }
     
     @Test
     public void testLoadRecordedVMData() throws InvalidFormatException, IOException{
-        Utils u = new Utils();
-        ArrayList<Defect> defectList = u.loadRecordedVMData(RECORDED_EXCEL_FILE);
+        ArrayList<Defect> defectList = Utils.loadRecordedVMData(RECORDED_EXCEL_FILE);
         assertEquals(vmRecordedDefectCount, defectList.size());
     }
     
     @Test
     public void testLoadRecordedJCLData() throws InvalidFormatException, IOException{
-        Utils u = new Utils();
-        ArrayList<Defect> defectList = u.loadRecordedJCLData(RECORDED_EXCEL_FILE);
+        ArrayList<Defect> defectList = Utils.loadRecordedJCLData(RECORDED_EXCEL_FILE);
         assertEquals(jclRecordedDefectCount, defectList.size());
     }
     
     @Test
     public void testLoadRecordedJITData() throws InvalidFormatException, IOException{
-        Utils u = new Utils();
-        ArrayList<Defect> defectList = u.loadRecordedJITData(RECORDED_EXCEL_FILE);
+        ArrayList<Defect> defectList = Utils.loadRecordedJITData(RECORDED_EXCEL_FILE);
         assertEquals(jitRecordedDefectCount, defectList.size());
     }
 }

@@ -1,9 +1,17 @@
 package data;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class Defect {
     private String id;
     private Component component;
+    private Date startDate;
     
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
     public Defect(String id, String component){
         this.id = id;
         if(component.equals("classes")){
@@ -35,4 +43,22 @@ public class Defect {
     public void setComponent(Component component) {
         this.component = component;
     }
+    
+    public boolean isNew(){
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_MONTH, -7);
+        if(startDate.after(c.getTime())){
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean equals(Object o){
+        if(((Defect)o).id.equals(this.id)){
+            return true;
+        }
+        return false;
+    }
+    
 }

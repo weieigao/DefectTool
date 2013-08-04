@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -21,11 +22,11 @@ import data.Defect;
 
 public class Utils {
     
-    private final String VM_SHEET_NAME = "Details-VM";
-    private final String JCL_SHEET_NAME = "Details-JCL";
-    private final String JIT_SHEET_NAME = "Details-JIT";
+    private static final String VM_SHEET_NAME = "Details-VM";
+    private static final String JCL_SHEET_NAME = "Details-JCL";
+    private static final String JIT_SHEET_NAME = "Details-JIT";
     
-    private ArrayList<Defect> loadRawData (String rawDataFileName) throws IOException{
+    private static ArrayList<Defect> loadRawData (String rawDataFileName) throws IOException{
         ArrayList<Defect> result = new ArrayList<Defect>();
         File f = new File(rawDataFileName);
         BufferedReader br = new BufferedReader(new FileReader(f));
@@ -40,7 +41,7 @@ public class Utils {
         return result;
     }
 
-    private String extractComponent(String line) {
+    private static String extractComponent(String line) {
         final String FOUR_SPACES="    ";
         int fourSpacesIndex = line.indexOf(FOUR_SPACES);
         String lineRemovedID = line.substring(fourSpacesIndex+4);
@@ -49,23 +50,23 @@ public class Utils {
         return component;
     }
 
-    private String extractID(String line) {
-        return line.substring(0, 5);
+    private static String extractID(String line) {
+        return line.substring(0, 6);
     }
     
-    public ArrayList<Defect> vmDefectList(String rawDataFileName) throws IOException{
-        return filterDefects(this.loadRawData(rawDataFileName), Component.VM);
+    public static ArrayList<Defect> vmDefectList(String rawDataFileName) throws IOException{
+        return filterDefects(loadRawData(rawDataFileName), Component.VM);
     }
     
-    public ArrayList<Defect> jclDefectList(String rawDataFileName) throws IOException{
-        return filterDefects(this.loadRawData(rawDataFileName), Component.JCL);
+    public static ArrayList<Defect> jclDefectList(String rawDataFileName) throws IOException{
+        return filterDefects(loadRawData(rawDataFileName), Component.JCL);
     }
     
-    public ArrayList<Defect> jitDefectList(String rawDataFileName) throws IOException{
-        return filterDefects(this.loadRawData(rawDataFileName), Component.JIT);
+    public static ArrayList<Defect> jitDefectList(String rawDataFileName) throws IOException{
+        return filterDefects(loadRawData(rawDataFileName), Component.JIT);
     }
 
-    private ArrayList<Defect> filterDefects(ArrayList<Defect> fullList, Component comp) {
+    private static ArrayList<Defect> filterDefects(ArrayList<Defect> fullList, Component comp) {
         ArrayList<Defect> result = new ArrayList<Defect>();
         for(Defect d: fullList){
             if(d.getComponent().equals(comp)){
@@ -75,19 +76,19 @@ public class Utils {
         return result;
     }
     
-    public ArrayList<Defect> loadRecordedVMData(String excelFileName) throws InvalidFormatException, IOException{
+    public static ArrayList<Defect> loadRecordedVMData(String excelFileName) throws InvalidFormatException, IOException{
         return loadRecordedData(excelFileName, VM_SHEET_NAME, Component.VM);
     }
     
-    public ArrayList<Defect> loadRecordedJCLData(String excelFileName) throws InvalidFormatException, IOException{
+    public static ArrayList<Defect> loadRecordedJCLData(String excelFileName) throws InvalidFormatException, IOException{
         return loadRecordedData(excelFileName,JCL_SHEET_NAME, Component.JCL);
     }
     
-    public ArrayList<Defect> loadRecordedJITData(String excelFileName) throws InvalidFormatException, IOException{
+    public static ArrayList<Defect> loadRecordedJITData(String excelFileName) throws InvalidFormatException, IOException{
         return loadRecordedData(excelFileName, JIT_SHEET_NAME, Component.JIT);
     }
 
-    private ArrayList<Defect> loadRecordedData(String excelFileName, String sheetName, Component comp)
+    private static ArrayList<Defect> loadRecordedData(String excelFileName, String sheetName, Component comp)
             throws FileNotFoundException, IOException, InvalidFormatException {
         ArrayList<Defect> result = new ArrayList<Defect>();
         InputStream input = new FileInputStream(excelFileName);
@@ -104,6 +105,11 @@ public class Utils {
             String id = Double.toString((idCell.getNumericCellValue()));
             id = id.substring(0, id.indexOf("."));
             Defect d = new Defect(id,comp);
+            
+            Cell startDateCell = row.getCell(1);
+            Date startDate = startDateCell.getDateCellValue();
+            d.setStartDate(startDate);
+            
             result.add(d);
         }
         return result;

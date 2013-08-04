@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import data.Component;
-import data.Config;
 import data.Defect;
 
 public class Analyze {
@@ -83,7 +82,6 @@ public class Analyze {
 //        System.out.println("new: " + rawDataList.size());
         ArrayList<Defect> result = new ArrayList<Defect>();
         for (Defect recordedDefect : recordedList) {
-//            System.out.println(recordedDefect.getId());
             if(recordedDefect.isNew()){
                 result.add(recordedDefect);
             }
