@@ -7,7 +7,20 @@ public class Defect {
     private String id;
     private Component component;
     private Date startDate;
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    private Date endDate;
     
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
@@ -48,6 +61,15 @@ public class Defect {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_MONTH, -7);
         if(startDate.after(c.getTime())){
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean isClosed(){
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_MONTH, -7);
+        if(endDate.after(c.getTime())){
             return true;
         }
         return false;

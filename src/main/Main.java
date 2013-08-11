@@ -1,14 +1,18 @@
 package main;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import data.Component;
 import data.Config;
 import data.Defect;
 import util.Analyze;
+import util.Utils;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidFormatException, IOException {
         Analyze a = new Analyze();
 
         System.out.println("Start to analyze VM defects");
@@ -38,5 +42,10 @@ public class Main {
         System.out.println("In Total we got: " + (jclNew + vmNew + jitNew)
                 + " new defects and " + (jclClosed + vmClosed + jitClosed)
                 + " defects Closed/Canceled");
+        
+        //write back to the excel file
+        //write back vm 
+//        Utils.writeVMNewDefectData(Config.RECORDED_EXCEL_FILE, vmNewResult);
+        
     }
 }

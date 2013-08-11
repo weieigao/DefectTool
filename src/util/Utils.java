@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -18,13 +20,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import data.Component;
+import data.Config;
 import data.Defect;
 
 public class Utils {
-    
-    private static final String VM_SHEET_NAME = "Details-VM";
-    private static final String JCL_SHEET_NAME = "Details-JCL";
-    private static final String JIT_SHEET_NAME = "Details-JIT";
     
     private static ArrayList<Defect> loadRawData (String rawDataFileName) throws IOException{
         ArrayList<Defect> result = new ArrayList<Defect>();
@@ -77,15 +76,59 @@ public class Utils {
     }
     
     public static ArrayList<Defect> loadRecordedVMData(String excelFileName) throws InvalidFormatException, IOException{
-        return loadRecordedData(excelFileName, VM_SHEET_NAME, Component.VM);
+        return loadRecordedData(excelFileName, Config.VM_SHEET_NAME, Component.VM);
     }
     
     public static ArrayList<Defect> loadRecordedJCLData(String excelFileName) throws InvalidFormatException, IOException{
-        return loadRecordedData(excelFileName,JCL_SHEET_NAME, Component.JCL);
+        return loadRecordedData(excelFileName,Config.JCL_SHEET_NAME, Component.JCL);
     }
     
     public static ArrayList<Defect> loadRecordedJITData(String excelFileName) throws InvalidFormatException, IOException{
-        return loadRecordedData(excelFileName, JIT_SHEET_NAME, Component.JIT);
+        return loadRecordedData(excelFileName, Config.JIT_SHEET_NAME, Component.JIT);
+    }
+    
+    public static ArrayList<Defect> loadArchivedVMData(String excelFileName) throws InvalidFormatException, IOException{
+        return loadRecordedData(excelFileName, Config.ARCHIVED_VM_SHEET_NAME, Component.VM);
+    }
+    
+    public static ArrayList<Defect> loadArchivedJCLData(String excelFileName) throws InvalidFormatException, IOException{
+        return loadRecordedData(excelFileName,Config.ARCHIVED_JCL_SHEET_NAME, Component.JCL);
+    }
+    
+    public static ArrayList<Defect> loadArchivedJITData(String excelFileName) throws InvalidFormatException, IOException{
+        return loadRecordedData(excelFileName, Config.ARCHIVED_JIT_SHEET_NAME, Component.JIT);
+    }
+    
+    public static void writeVMNewDefectData(String excelFileName, ArrayList<Defect> newList) throws InvalidFormatException, IOException{
+        writeNewDefectData(excelFileName, Config.VM_SHEET_NAME,Component.VM,newList);
+    }
+    
+    private static void writeNewDefectData(String excelFileName, String sheetName, Component comp, ArrayList<Defect> newList) throws InvalidFormatException, IOException{
+        InputStream input = new FileInputStream(excelFileName);
+        Workbook wb = WorkbookFactory.create(input);
+        Sheet sheet = wb.getSheet(sheetName);
+        final int numOfRows = sheet.getPhysicalNumberOfRows();
+        
+        ArrayList<Defect> existDefectList = loadRecordedData(excelFileName, sheetName, comp);
+        int addToRow = numOfRows;
+        for(int i = 0; i < newList.size(); i++){
+            Defect defect = newList.get(i);
+            if(!existDefectList.contains(defect)){
+                Row row = sheet.createRow(addToRow);
+                Cell idCell = row.createCell(0);
+                idCell.setCellValue(Double.parseDouble(defect.getId()));
+                Cell startDateCell = row.createCell(1);
+                startDateCell.setCellValue(defect.getStartDate());
+                
+                addToRow++;
+            }
+        }
+        
+        OutputStream output = new FileOutputStream(excelFileName);
+        wb.write(output);
+        
+        input.close();
+        output.close();
     }
 
     private static ArrayList<Defect> loadRecordedData(String excelFileName, String sheetName, Component comp)
@@ -110,8 +153,31 @@ public class Utils {
             Date startDate = startDateCell.getDateCellValue();
             d.setStartDate(startDate);
             
+            Cell endDateCell = row.getCell(2);
+            if (endDateCell != null) {
+                Date endDate = endDateCell.getDateCellValue();
+                d.setEndDate(endDate);
+            }
+            
             result.add(d);
         }
         return result;
+    }
+    
+    
+    public static void copyFile(String srcFile, String destFile) throws IOException{
+        File f = new File(srcFile);
+        FileInputStream fis = new FileInputStream(f);
+        File output = new File(destFile);
+        FileOutputStream fous = new FileOutputStream(output);
+        
+        byte[] buffer = new byte[1024];
+        int readNum = -1;
+        while((readNum =fis.read(buffer)) != -1){
+            fous.write(buffer, 0, readNum);
+        }
+        
+        fis.close();
+        fous.close();
     }
 }
