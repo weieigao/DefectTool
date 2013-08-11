@@ -29,13 +29,8 @@ public class TestUtils extends TestCase{
     private final int jitRecordedDefectCount = 3;
     
     @Override
-    public void setUp() throws IOException{
-        copyExcelFile();
-    }
-    
-    @Override
     public void tearDown(){
-        removeCopyExcelFile();
+//        removeCopyExcelFile();
     }
     
     private void copyExcelFile(){
@@ -104,6 +99,60 @@ public class TestUtils extends TestCase{
         
         ArrayList<Defect> addedList = Utils.loadRecordedJITData(COPY_OF_RECORDED_EXCEL_FILE);
         assertEquals(addedList.size(), numOfExistDefect + newList.size());
+        
+        removeCopyExcelFile();
+    }
+    
+    @Test
+    public void testWriteVMCloseDefectData() throws InvalidFormatException, IOException{
+        removeCopyExcelFile();
+        copyExcelFile();
+        
+        ArrayList<Defect> existList = Utils.loadArchivedVMData(COPY_OF_RECORDED_EXCEL_FILE);
+        int numOfExistDefect = existList.size();
+        
+        Analyze a = new Analyze();
+        ArrayList<Defect> closeList = a.getClosedDefect(Component.VM, RAW_DATA_File_NAME, COPY_OF_RECORDED_EXCEL_FILE);
+        Utils.writeVMClosedDefectData(COPY_OF_RECORDED_EXCEL_FILE, closeList);
+        
+        ArrayList<Defect> addedList = Utils.loadArchivedVMData(COPY_OF_RECORDED_EXCEL_FILE);
+        assertEquals(addedList.size(), numOfExistDefect + closeList.size());
+        
+        removeCopyExcelFile();
+    }
+    
+    @Test
+    public void testWriteJCLCloseDefectData() throws InvalidFormatException, IOException{
+        removeCopyExcelFile();
+        copyExcelFile();
+        
+        ArrayList<Defect> existList = Utils.loadArchivedJCLData(COPY_OF_RECORDED_EXCEL_FILE);
+        int numOfExistDefect = existList.size();
+        
+        Analyze a = new Analyze();
+        ArrayList<Defect> closeList = a.getClosedDefect(Component.JCL, RAW_DATA_File_NAME, COPY_OF_RECORDED_EXCEL_FILE);
+        Utils.writeJCLClosedDefectData(COPY_OF_RECORDED_EXCEL_FILE, closeList);
+        
+        ArrayList<Defect> addedList = Utils.loadArchivedJCLData(COPY_OF_RECORDED_EXCEL_FILE);
+        assertEquals(addedList.size(), numOfExistDefect + closeList.size());
+        
+        removeCopyExcelFile();
+    }
+    
+    @Test
+    public void testWriteJITCloseDefectData() throws InvalidFormatException, IOException{
+        removeCopyExcelFile();
+        copyExcelFile();
+        
+        ArrayList<Defect> existList = Utils.loadArchivedJITData(COPY_OF_RECORDED_EXCEL_FILE);
+        int numOfExistDefect = existList.size();
+        
+        Analyze a = new Analyze();
+        ArrayList<Defect> closeList = a.getClosedDefect(Component.JIT, RAW_DATA_File_NAME, COPY_OF_RECORDED_EXCEL_FILE);
+        Utils.writeJITClosedDefectData(COPY_OF_RECORDED_EXCEL_FILE, closeList);
+        
+        ArrayList<Defect> addedList = Utils.loadArchivedJITData(COPY_OF_RECORDED_EXCEL_FILE);
+        assertEquals(addedList.size(), numOfExistDefect + closeList.size());
         
         removeCopyExcelFile();
     }

@@ -136,6 +136,86 @@ public class Utils {
         writeNewDefectData(excelFileName, Config.JIT_SHEET_NAME, Component.JIT,
                 newList);
     }
+    
+    public static void writeVMClosedDefectData(String excelFileName,
+            ArrayList<Defect> newList) throws InvalidFormatException,
+            IOException {
+        writeClosedDefectData(excelFileName, Config.VM_SHEET_NAME,Config.ARCHIVED_VM_SHEET_NAME, Component.VM,
+                newList);
+    }
+
+    public static void writeJCLClosedDefectData(String excelFileName,
+            ArrayList<Defect> newList) throws InvalidFormatException,
+            IOException {
+        writeClosedDefectData(excelFileName, Config.JCL_SHEET_NAME,Config.ARCHIVED_JCL_SHEET_NAME, Component.JCL,
+                newList);
+    }
+    
+    public static void writeJITClosedDefectData(String excelFileName,
+            ArrayList<Defect> newList) throws InvalidFormatException,
+            IOException {
+        writeClosedDefectData(excelFileName, Config.JIT_SHEET_NAME,Config.ARCHIVED_JIT_SHEET_NAME, Component.JIT,
+                newList);
+    }
+    
+    private static void writeClosedDefectData(String excelFileName,
+            String recordedSheetName, String archivedSheetName, Component comp, ArrayList<Defect> closeList){
+        InputStream input = null;
+        Workbook wb = null;
+        try {
+            input = new FileInputStream(excelFileName);
+            wb = WorkbookFactory.create(input);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvalidFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Sheet recordedSheet = wb.getSheet(recordedSheetName);
+        Sheet archivedSheet = wb.getSheet(archivedSheetName);
+        final int numOfRows = recordedSheet.getPhysicalNumberOfRows();
+        final int numOfRowsOfArchive = archivedSheet.getPhysicalNumberOfRows();
+        
+        int lastRowOfArchive = numOfRowsOfArchive;
+        
+        for(int i = 1; i < numOfRows; i++){
+            Row row = recordedSheet.getRow(i);
+            Cell idCell = row.getCell(0);
+            String id = Double.toString((idCell.getNumericCellValue()));
+            id = id.substring(0, id.indexOf("."));
+            
+            Defect d = new Defect(id, comp);
+
+            Cell startDateCell = row.getCell(1);
+            Date startDate = startDateCell.getDateCellValue();
+            d.setStartDate(startDate);
+            if(closeList.contains(d)){
+                recordedSheet.removeRow(row);
+                d.setEndDate(new Date());
+                
+                Row newRow = archivedSheet.createRow(lastRowOfArchive);
+                newRow.createCell(0).setCellValue(Double.parseDouble(d.getId()));
+                newRow.createCell(1).setCellValue(d.getStartDate());
+                newRow.createCell(2).setCellValue(d.getEndDate());
+                
+                lastRowOfArchive++;
+            }
+        }
+        
+        OutputStream output;
+        try {
+            output = new FileOutputStream(excelFileName);
+            wb.write(output);
+
+            input.close();
+            output.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static void writeNewDefectData(String excelFileName,
             String sheetName, Component comp, ArrayList<Defect> newList)
