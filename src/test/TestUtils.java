@@ -73,6 +73,40 @@ public class TestUtils extends TestCase{
         
         removeCopyExcelFile();
     }
+    
+    @Test
+    public void testWriteJCLNewDefectData() throws InvalidFormatException, IOException{
+        removeCopyExcelFile();
+        copyExcelFile();
+        ArrayList<Defect> existList = Utils.loadRecordedJCLData(COPY_OF_RECORDED_EXCEL_FILE);
+        int numOfExistDefect = existList.size();
+        
+        Analyze a = new Analyze();
+        ArrayList<Defect> newList = a.getNewDefect(Component.JCL, RAW_DATA_File_NAME, COPY_OF_RECORDED_EXCEL_FILE);
+        Utils.writeJCLNewDefectData(COPY_OF_RECORDED_EXCEL_FILE, newList);
+        
+        ArrayList<Defect> addedList = Utils.loadRecordedJCLData(COPY_OF_RECORDED_EXCEL_FILE);
+        assertEquals(addedList.size(), numOfExistDefect + newList.size());
+        
+        removeCopyExcelFile();
+    }
+    
+    @Test
+    public void testWriteJITNewDefectData() throws InvalidFormatException, IOException{
+        removeCopyExcelFile();
+        copyExcelFile();
+        ArrayList<Defect> existList = Utils.loadRecordedJITData(COPY_OF_RECORDED_EXCEL_FILE);
+        int numOfExistDefect = existList.size();
+        
+        Analyze a = new Analyze();
+        ArrayList<Defect> newList = a.getNewDefect(Component.JIT, RAW_DATA_File_NAME, COPY_OF_RECORDED_EXCEL_FILE);
+        Utils.writeJITNewDefectData(COPY_OF_RECORDED_EXCEL_FILE, newList);
+        
+        ArrayList<Defect> addedList = Utils.loadRecordedJITData(COPY_OF_RECORDED_EXCEL_FILE);
+        assertEquals(addedList.size(), numOfExistDefect + newList.size());
+        
+        removeCopyExcelFile();
+    }
 
     @Test
     public void testVmDefectList() throws IOException{

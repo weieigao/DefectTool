@@ -5,11 +5,10 @@ import java.util.ArrayList;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import util.Analyze;
 import data.Component;
 import data.Config;
 import data.Defect;
-import util.Analyze;
-import util.Utils;
 
 public class Main {
     public static void main(String[] args) throws InvalidFormatException, IOException {
